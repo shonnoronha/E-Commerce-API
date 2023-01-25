@@ -5,7 +5,7 @@
 - [ ] create customer
 - [ ] login customer
 - [ ] list all customers
-- [ ] add product (add category also)
+- [x] add product (add category also)
 - [ ] add order (add order_item also)
 - [ ] add category
 - [ ] list all products with categories
