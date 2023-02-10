@@ -30,3 +30,8 @@ class CustomerOut(CustomerIn):
 
     class Config:
         orm_mode = True
+
+
+class TokenOut(BaseModel):
+    access_token: str
+    token_type: str
