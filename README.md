@@ -2,9 +2,9 @@
 
 ### TODO routes
 
-- [ ] create customer
-- [ ] login customer
-- [ ] list all customers
+- [x] create customer
+- [x] login customer
+- [x] list all customers
 - [x] add product (add category also)
 - [ ] add order (add order_item also)
 - [ ] add category

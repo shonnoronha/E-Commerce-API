@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, Numeric, String, TIMESTAMP, text
+from sqlalchemy import Column, Integer, Numeric, String, TIMESTAMP, text, ForeignKey
+from sqlalchemy.orm import relationship
 
 from app.database import Base
 
@@ -10,9 +11,17 @@ class Product(Base):
     name = Column(String, nullable=False)
     price = Column(Numeric, nullable=False)
     description = Column(String, nullable=True)
+    customer_id = Column(
+        Integer,
+        ForeignKey(
+            "customers.customer_id", ondelete="CASCADE", name="fk_product_customer"
+        ),
+        nullable=False,
+    )
     created_at = Column(
         TIMESTAMP(timezone=True), nullable=False, server_default=text("now()")
     )
+    customer = relationship("Customer")
 
 
 class Customer(Base):

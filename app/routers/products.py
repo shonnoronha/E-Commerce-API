@@ -37,7 +37,7 @@ def create_product(
     db: Session = Depends(database.get_db),
     customer: schemas.CustomerOut = Depends(oauth2.get_current_customer),
 ):
-    new_product = models.Product(**product.dict())
+    new_product = models.Product(**product.dict(), customer_id=customer.customer_id)
     db.add(new_product)
     db.commit()
     db.refresh(new_product)
@@ -56,6 +56,12 @@ def delete_product(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Product with id {id} does not exist",
+        )
+
+    if product_query.first().customer_id != customer.customer_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=f"You are forbidden from deleting post with id {id}",
         )
 
     product_query.delete(synchronize_session=False)
@@ -77,6 +83,12 @@ def update_product(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Product with id {id} does not exist",
+        )
+
+    if product_query.first().customer_id != customer.customer_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=f"You are forbidden from updating post with id {id}",
         )
 
     product_query.update(product.dict(), synchronize_session=False)

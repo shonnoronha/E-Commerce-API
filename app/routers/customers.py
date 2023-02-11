@@ -17,7 +17,9 @@ def get_all_customers(
     return customers
 
 
-@router.post("", response_model=schemas.CustomerOut)
+@router.post(
+    "", response_model=schemas.CustomerOut, status_code=status.HTTP_201_CREATED
+)
 def create_customer(
     customer: schemas.CustomerIn, db: Session = Depends(database.get_db)
 ):
