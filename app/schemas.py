@@ -1,4 +1,5 @@
 from pydantic import BaseModel, EmailStr
+from typing import Optional
 
 from datetime import datetime
 
@@ -27,10 +28,44 @@ class ProductIn(BaseModel):
     description: str
 
 
-class ProductOut(ProductIn):
+class ProductField(BaseModel):
     product_id: int
+    name: str
+    price: float
+    description: str
     created_at: datetime
-    # customer: CustomerOut
+
+    class Config:
+        orm_mode = True
+
+
+class CategoryIn(BaseModel):
+    name: str
+    parent_category_id: int
+
+
+class CategoryOut(BaseModel):
+    name: str
+    category_id: int
+    parent_category_id: Optional[int]
+
+    class Config:
+        orm_mode = True
+
+
+class ProductCategoryIn(BaseModel):
+    product_id: int
+    category_id: int
+
+
+class CategoryField(CategoryOut):
+    class Config:
+        fields = {"parent_category_id": {"exclude": True}}
+
+
+class ProductOut(BaseModel):
+    Product: ProductField
+    Category: Optional[CategoryField]
 
     class Config:
         orm_mode = True

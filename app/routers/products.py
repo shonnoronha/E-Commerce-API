@@ -12,7 +12,20 @@ def get_all_products(
     db: Session = Depends(database.get_db),
     customer: schemas.CustomerOut = Depends(oauth2.get_current_customer),
 ):
-    products = db.query(models.Product).all()
+    products = (
+        db.query(models.Product, models.Category)
+        .join(
+            models.productCategory,
+            models.Product.product_id == models.productCategory.product_id,
+            isouter=True,
+        )
+        .join(
+            models.Category,
+            models.Category.category_id == models.productCategory.category_id,
+            isouter=True,
+        )
+        .all()
+    )
     return products
 
 
@@ -22,7 +35,21 @@ def get_single_product(
     db: Session = Depends(database.get_db),
     customer: schemas.CustomerOut = Depends(oauth2.get_current_customer),
 ):
-    product = db.query(models.Product).filter(models.Product.product_id == id).first()
+    product = (
+        db.query(models.Product, models.Category)
+        .join(
+            models.productCategory,
+            models.Product.product_id == models.productCategory.product_id,
+            isouter=True,
+        )
+        .join(
+            models.Category,
+            models.Category.category_id == models.productCategory.category_id,
+            isouter=True,
+        )
+        .filter(models.Product.product_id == id)
+        .first()
+    )
     if not product:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

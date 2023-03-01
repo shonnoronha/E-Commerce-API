@@ -5,7 +5,7 @@ from typing import List
 
 from app import schemas, models, database, hash_utils, oauth2
 
-router = APIRouter(prefix="/customers", tags=["customers"])
+router = APIRouter(prefix="/customers", tags=["Customers"])
 
 
 @router.get("", response_model=List[schemas.CustomerOut])

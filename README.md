@@ -16,7 +16,10 @@
 - [ ] place order on a product (reduce quantity auto)
 - [ ] cancel a order (with order-id)
 - [ ] remove a category
-<!-- implement more routes along the way -->
+<!-- other todos -->
+- [ ] implement more unit testing
+- [ ] dockerize app
+- [ ] add quantity field to products table
 
 ### Database Design
 

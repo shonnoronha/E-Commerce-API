@@ -35,3 +35,35 @@ class Customer(Base):
     created_at = Column(
         TIMESTAMP(timezone=True), nullable=False, server_default=text("now()")
     )
+
+
+class Category(Base):
+    __tablename__ = "categories"
+
+    category_id = Column(Integer, primary_key=True, nullable=False)
+    name = Column(String, nullable=False)
+    parent_category_id = Column(
+        Integer,
+        ForeignKey(
+            "categories.category_id", ondelete="CASCADE", name="fk_category_category"
+        ),
+    )
+
+
+class productCategory(Base):
+    __tablename__ = "product_category"
+
+    product_id = Column(
+        Integer,
+        ForeignKey(
+            "products.product_id", ondelete="CASCADE", name="fk_product_category"
+        ),
+        primary_key=True,
+    )
+    category_id = Column(
+        Integer,
+        ForeignKey(
+            "categories.category_id", name="fk_category_product", ondelete="CASCADE"
+        ),
+        primary_key=True,
+    )
