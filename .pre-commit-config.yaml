@@ -3,6 +3,9 @@ repos:
     rev: v4.4.0
     hooks:
       - id: trailing-whitespace
+        id: end-of-file-fixer
+        id: check-yaml
+        id: check-added-large-files
 
   - repo: https://github.com/psf/black
     rev: 23.1.0
@@ -13,4 +16,4 @@ repos:
     rev: v3.9.0
     hooks:
       - id: reorder-python-imports
-        args: [-application-directories=.:app]
+        args: [--application-directories=.:app]

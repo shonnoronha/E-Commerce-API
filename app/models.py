@@ -1,13 +1,11 @@
-from sqlalchemy import (
-    Column,
-    Integer,
-    Numeric,
-    String,
-    TIMESTAMP,
-    text,
-    ForeignKey,
-    Boolean,
-)
+from sqlalchemy import Boolean
+from sqlalchemy import Column
+from sqlalchemy import ForeignKey
+from sqlalchemy import Integer
+from sqlalchemy import Numeric
+from sqlalchemy import String
+from sqlalchemy import text
+from sqlalchemy import TIMESTAMP
 from sqlalchemy.orm import relationship
 
 from app.database import Base
@@ -95,18 +93,18 @@ class Orders(Base):
     )
 
 
-# class OrderItems(Base):
-#     __tablename__ = "order_items"
+class OrderItems(Base):
+    __tablename__ = "order_items"
 
-#     order_item_id = Column(Integer, primary_key=True, nullable=False)
-#     order_id = Column(
-#         Integer,
-#         ForeignKey("orders.order_id", name="fk_order_items_order", ondelete="CASCADE"),
-#     )
-#     product_id = Column(
-#         Integer,
-#         ForeignKey(
-#             "products.product_id", name="fk_order_items_product", ondelete="CASCADE"
-#         ),
-#     )
-#     quantity = Column(Integer, default=text("1"))
+    order_item_id = Column(Integer, primary_key=True, nullable=False)
+    order_id = Column(
+        Integer,
+        ForeignKey("orders.order_id", name="fk_order_items_order", ondelete="CASCADE"),
+    )
+    product_id = Column(
+        Integer,
+        ForeignKey(
+            "products.product_id", name="fk_order_items_product", ondelete="CASCADE"
+        ),
+    )
+    quantity = Column(Integer, default=text("1"))
