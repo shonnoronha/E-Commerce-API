@@ -7,8 +7,8 @@
 - [x] list all customers
 - [x] add product (add category also)
 - [ ] add order (add order_item also)
-- [ ] add category
-- [ ] list all products with categories
+- [x] add category
+- [x] list all products with categories
 - [ ] list all orders with customer names
 - [ ] list all order items
 - [ ] list all products of a given category

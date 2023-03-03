@@ -1,4 +1,13 @@
-from sqlalchemy import Column, Integer, Numeric, String, TIMESTAMP, text, ForeignKey
+from sqlalchemy import (
+    Column,
+    Integer,
+    Numeric,
+    String,
+    TIMESTAMP,
+    text,
+    ForeignKey,
+    Boolean,
+)
 from sqlalchemy.orm import relationship
 
 from app.database import Base
@@ -67,3 +76,37 @@ class productCategory(Base):
         ),
         primary_key=True,
     )
+
+
+class Orders(Base):
+    __tablename__ = "orders"
+
+    order_id = Column(Integer, primary_key=True, nullable=False)
+    customer_id = Column(
+        Integer,
+        ForeignKey(
+            "customers.customer_id", name="fk_orders_customer", ondelete="CASCADE"
+        ),
+    )
+    total_cost = Column(Integer, nullable=False, server_default=text("0"))
+    is_completed = Column(Boolean, default=False, nullable=False)
+    order_date = Column(
+        TIMESTAMP(timezone=True), nullable=False, server_default=text("now()")
+    )
+
+
+# class OrderItems(Base):
+#     __tablename__ = "order_items"
+
+#     order_item_id = Column(Integer, primary_key=True, nullable=False)
+#     order_id = Column(
+#         Integer,
+#         ForeignKey("orders.order_id", name="fk_order_items_order", ondelete="CASCADE"),
+#     )
+#     product_id = Column(
+#         Integer,
+#         ForeignKey(
+#             "products.product_id", name="fk_order_items_product", ondelete="CASCADE"
+#         ),
+#     )
+#     quantity = Column(Integer, default=text("1"))
