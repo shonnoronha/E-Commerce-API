@@ -87,7 +87,7 @@ class Orders(Base):
         ),
     )
     total_cost = Column(Integer, nullable=False, server_default=text("0"))
-    is_completed = Column(Boolean, default=False, nullable=False)
+    is_completed = Column(Boolean, server_default=text("0"), nullable=False)
     order_date = Column(
         TIMESTAMP(timezone=True), nullable=False, server_default=text("now()")
     )

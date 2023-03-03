@@ -1,15 +1,20 @@
+from random import choice
+from random import randint
+
+import pytest
+from faker import Faker
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, Session
-from faker import Faker
-from random import randint, choice
-import pytest
+from sqlalchemy.orm import Session
+from sqlalchemy.orm import sessionmaker
 
-from app.main import app
-from app.models import Base, Product
-from app.database import SQLALCHEMY_URL, get_db
-from app.oauth2 import create_access_token
 from app import schemas
+from app.database import get_db
+from app.database import SQLALCHEMY_URL
+from app.main import app
+from app.models import Base
+from app.models import Product
+from app.oauth2 import create_access_token
 
 SQLALCHEMY_URL += "_test"
 

@@ -1,7 +1,8 @@
-from pydantic import BaseModel, EmailStr
+from datetime import datetime
 from typing import Optional
 
-from datetime import datetime
+from pydantic import BaseModel
+from pydantic import EmailStr
 
 
 class CustomerIn(BaseModel):
@@ -74,3 +75,14 @@ class ProductOut(BaseModel):
 class TokenOut(BaseModel):
     access_token: str
     token_type: str
+
+
+class OrderOut(BaseModel):
+    order_id: int
+    customer_id: int
+    total_cost: int
+    is_completed: bool
+    order_date: datetime
+
+    class Config:
+        orm_mode = True

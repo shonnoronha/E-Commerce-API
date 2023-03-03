@@ -1,8 +1,14 @@
-from fastapi import APIRouter, status, Depends, HTTPException
-from sqlalchemy.orm import Session
+from fastapi import APIRouter
+from fastapi import Depends
+from fastapi import HTTPException
+from fastapi import status
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import Session
 
-from app import database, schemas, oauth2, models
+from app import database
+from app import models
+from app import oauth2
+from app import schemas
 
 
 router = APIRouter(prefix="/product_category", tags=["Product-Category"])
