@@ -35,7 +35,7 @@ def upgrade() -> None:
             name="fk_product_category",
             ondelete="CASCADE",
         ),
-        sa.PrimaryKeyConstraint("product_id", "category_id"),
+        sa.UniqueConstraint("product_id"),
     )
     # ### end Alembic commands ###
 

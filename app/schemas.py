@@ -86,3 +86,13 @@ class OrderOut(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class OrderItemOut(BaseModel):
+    order_item_id: int
+    quantity: int
+    product_id: int
+    order_id: int
+
+    class Config:
+        orm_mode = True

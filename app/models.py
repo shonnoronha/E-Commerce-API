@@ -13,7 +13,7 @@ from app.database import Base
 
 class Product(Base):
     __tablename__ = "products"
-
+    # TODO: add owner id and quantity fields
     product_id = Column(Integer, primary_key=True, nullable=False)
     name = Column(String, nullable=False)
     price = Column(Numeric, nullable=False)
@@ -87,7 +87,7 @@ class Orders(Base):
         ),
     )
     total_cost = Column(Integer, nullable=False, server_default=text("0"))
-    is_completed = Column(Boolean, server_default=text("0"), nullable=False)
+    is_completed = Column(Boolean, server_default=text("false"), nullable=False)
     order_date = Column(
         TIMESTAMP(timezone=True), nullable=False, server_default=text("now()")
     )

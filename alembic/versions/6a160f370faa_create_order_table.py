@@ -26,7 +26,12 @@ def upgrade() -> None:
         sa.Column(
             "total_cost", sa.Integer(), server_default=sa.text("0"), nullable=False
         ),
-        sa.Column("is_completed", sa.Boolean(), nullable=False),
+        sa.Column(
+            "is_completed",
+            sa.Boolean(),
+            nullable=False,
+            server_default=sa.text("false"),
+        ),
         sa.Column(
             "order_date",
             sa.TIMESTAMP(timezone=True),

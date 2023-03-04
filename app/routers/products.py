@@ -5,6 +5,7 @@ from fastapi import Depends
 from fastapi import HTTPException
 from fastapi import Response
 from fastapi import status
+from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from app import database
@@ -13,6 +14,37 @@ from app import oauth2
 from app import schemas
 
 router = APIRouter(prefix="/products", tags=["Products"])
+
+
+@router.get("/test")
+def test(
+    db: Session = Depends(database.get_db),
+    customer: schemas.CustomerOut = Depends(oauth2.get_current_customer),
+):
+    products = (
+        db.query(
+            models.Product.product_id,
+            models.Product.name.label("product_name"),
+            models.Product.description,
+            models.Product.price,
+            models.Category.name.label("category_name"),
+            models.Category.category_id,
+            models.Product.created_at,
+        )
+        .join(
+            models.productCategory,
+            models.Product.product_id == models.productCategory.product_id,
+            isouter=True,
+        )
+        .join(
+            models.Category,
+            models.Category.category_id == models.productCategory.category_id,
+            isouter=True,
+        )
+        .order_by(text("products.product_id"))
+        .all()
+    )
+    return products
 
 
 @router.get("", response_model=List[schemas.ProductOut])
