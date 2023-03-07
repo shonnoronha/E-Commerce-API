@@ -13,11 +13,11 @@ from app.database import Base
 
 class Product(Base):
     __tablename__ = "products"
-    # TODO: add owner id and quantity fields
     product_id = Column(Integer, primary_key=True, nullable=False)
     name = Column(String, nullable=False)
     price = Column(Numeric, nullable=False)
     description = Column(String, nullable=True)
+    quantity = Column(Integer, nullable=False, server_default=text("1"))
     customer_id = Column(
         Integer,
         ForeignKey(
@@ -72,7 +72,6 @@ class productCategory(Base):
         ForeignKey(
             "categories.category_id", name="fk_category_product", ondelete="CASCADE"
         ),
-        primary_key=True,
     )
 
 

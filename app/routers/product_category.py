@@ -43,12 +43,6 @@ def add_product_category(
             status_code=status.HTTP_404_NOT_FOUND,
         )
 
-    print(
-        product.product_id,
-        category.category_id,
-        product.customer_id == customer.customer_id,
-    )
-
     if product.customer_id != customer.customer_id:
         raise HTTPException(
             detail=f"user with id {customer.customer_id} cannot add category to product with id {product_category.product_id}",
@@ -67,5 +61,5 @@ def add_product_category(
     except IntegrityError:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail=f"product {product_category.product_id} with category {product_category.category_id} already exists",
+            detail=f"product {product_category.product_id} with category {product_category.category_id} already exists",  # FIXME: changed constraint from composite primary key to unique
         )

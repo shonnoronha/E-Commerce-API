@@ -54,3 +54,13 @@ def get_current_customer(token=Depends(oauth2_scheme), db: Session = Depends(get
         .first()
     )
     return schemas.CustomerOut(**vars(customer))
+
+
+def is_customer_admin(customer: schemas.CustomerOut = Depends(get_current_customer)):
+    if customer.email == settings.admin_email:
+        return customer
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="not a admin user",
+        )

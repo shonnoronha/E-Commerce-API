@@ -15,7 +15,7 @@ router = APIRouter(prefix="/categories", tags=["Categories"])
 @router.get("", response_model=List[schemas.CategoryOut])
 def get_all_parent_categories(
     db: Session = Depends(database.get_db),
-    customer: schemas.CustomerOut = Depends(oauth2.get_current_customer),
+    customer: schemas.CustomerOut = Depends(oauth2.is_customer_admin),
 ):
     res = (
         db.query(models.Category)
@@ -35,7 +35,9 @@ def get_all_categories(
 
 @router.post("", response_model=schemas.CategoryOut)
 def create_child_category(
-    category: schemas.CategoryIn, db: Session = Depends(database.get_db)
+    category: schemas.CategoryIn,
+    db: Session = Depends(database.get_db),
+    customer: schemas.CustomerOut = Depends(oauth2.is_customer_admin),
 ):
     new_category = models.Category(**category.dict())
     db.add(new_category)

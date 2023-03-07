@@ -8,10 +8,10 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app import database
-from app import hash_utils
 from app import models
 from app import oauth2
 from app import schemas
+from app import utils
 
 router = APIRouter(prefix="/customers", tags=["Customers"])
 
@@ -19,7 +19,7 @@ router = APIRouter(prefix="/customers", tags=["Customers"])
 @router.get("", response_model=List[schemas.CustomerOut])
 def get_all_customers(
     db: Session = Depends(database.get_db),
-    customer: schemas.CustomerOut = Depends(oauth2.get_current_customer),
+    customer: schemas.CustomerOut = Depends(oauth2.is_customer_admin),
 ):
     customers = db.query(models.Customer).all()
     return customers
@@ -31,7 +31,7 @@ def get_all_customers(
 def create_customer(
     customer: schemas.CustomerIn, db: Session = Depends(database.get_db)
 ):
-    customer.password = hash_utils.hash_password(customer.password)
+    customer.password = utils.hash_password(customer.password)
     new_customer = models.Customer(**customer.dict())
     try:
         db.add(new_customer)

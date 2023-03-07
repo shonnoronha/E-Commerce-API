@@ -27,13 +27,18 @@ class ProductIn(BaseModel):
     name: str
     price: float
     description: str
+    quantity: Optional[int] = 1
+    category_id: Optional[int] = None
 
 
-class ProductField(BaseModel):
+class ProductOut(BaseModel):
     product_id: int
-    name: str
-    price: float
+    product_name: str
     description: str
+    quantity: int
+    price: float
+    category_id: Optional[int] = None
+    category_name: Optional[str] = None
     created_at: datetime
 
     class Config:
@@ -42,7 +47,7 @@ class ProductField(BaseModel):
 
 class CategoryIn(BaseModel):
     name: str
-    parent_category_id: int
+    parent_category_id: Optional[int] = None
 
 
 class CategoryOut(BaseModel):
@@ -62,14 +67,6 @@ class ProductCategoryIn(BaseModel):
 class CategoryField(CategoryOut):
     class Config:
         fields = {"parent_category_id": {"exclude": True}}
-
-
-class ProductOut(BaseModel):
-    Product: ProductField
-    Category: Optional[CategoryField]
-
-    class Config:
-        orm_mode = True
 
 
 class TokenOut(BaseModel):

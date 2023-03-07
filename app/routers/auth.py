@@ -6,10 +6,10 @@ from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
 from app import database
-from app import hash_utils
 from app import models
 from app import oauth2
 from app import schemas
+from app import utils
 
 router = APIRouter(tags=["Auth"])
 
@@ -22,7 +22,7 @@ def login_customer(
     customer = (
         db.query(models.Customer).filter(models.Customer.email == data.username).first()
     )
-    if not customer or not (hash_utils.verify(data.password, customer.password)):
+    if not customer or not (utils.verify(data.password, customer.password)):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN, detail="invalid credentials"
         )
