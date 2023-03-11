@@ -1,0 +1,16 @@
+.env
+.gitignore
+.idea/
+.vscode/
+.dockerignore
+docker-compose.yaml
+*.sql
+Dockerfile
+README.md
+__pycache__/
+**/__pycache__/
+venv/
+assets/
+.pytest_cache/
+.pre-commit-config.yaml
+.git/

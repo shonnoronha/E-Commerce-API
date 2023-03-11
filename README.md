@@ -1,27 +1,61 @@
-# Simple ecommerce backend using fastapi
+# E-Commerce API
 
-### TODOs
+### A Simple Market-Place like API implemented using FastAPI
 
-- [x] create customer
-- [x] login customer
-- [x] list all customers
-- [x] add product (add category also)
-- [x] add order (add order_item also)
-- [x] add category
-- [x] list all products with categories
-- [x] list all orders with customer names
-- [x] list all order items
-- [x] list all products of current customer
-- [x] list all products of a given category
-- [x] list product name of each order item
-- [x] list all the ordered products of current customer
-- [x] place order on a product (reduce quantity auto)
-- [x] cancel a order (with order-id)
-- [x] remove a category
+## To Run this Project Locally
 
-- [ ] implement more unit testing
-- [ ] dockerize app
+### Config Ecommerce project
 
-### Database Design
+#### Create .env file at the root of project and set following options
+
+#### You can create a secrey key by executing `openssl rand -hex 32`
+
+```sh
+DATABASE_HOSTNAME=
+DATABASE_PORT=
+DATABASE_PASSWORD=
+DATABASE_NAME=
+DATABASE_USERNAME=
+SECRET_KEY=
+ALGORITHM=
+ACCESS_TOKEN_EXPIRE_MINUTES=
+ADMIN_EMAIL=
+```
+
+### 1.Clone This Repository
+
+```sh
+git clone https://github.com/shonnoronha/ecommerce-backend.git
+cd ecommerce-backend
+```
+
+### 2. Docker (Recommended)
+
+```sh
+docker-compose up -d
+docker exec ecommerce alembic upgrade head
+```
+
+### OR
+
+### 2. Install manually
+
+#### you will need a postgres database (check config below) and python 3.9+
+
+```sh
+pip install -r requirements.txt
+alembic upgrade head
+uvicorn app.main:app
+```
+
+### 3. Open Docs
+
+### Visit [localhost:8000/docs](http://localhost:8000/docs)
+
+### Create a Customer with Admin Email
+
+### Login using Admin Email
+
+## Database Design
 
 ![database-schema](./assets/db_schema.png)
