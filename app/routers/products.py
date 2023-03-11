@@ -178,7 +178,7 @@ def update_product(
 
     if product.customer_id != customer.customer_id:
         raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
+            status_code=status.HTTP_403_FORBIDDEN,
             detail=f"customer {customer.customer_id} cannot update product {product_id}",
         )
 

@@ -16,6 +16,39 @@ from app import utils
 router = APIRouter(prefix="/customers", tags=["Customers"])
 
 
+@router.get("/{customer_id}/products", response_model=List[schemas.ProductOut])
+def get_customers_products(
+    customer_id: int,
+    db: Session = Depends(database.get_db),
+    customer: schemas.CustomerOut = Depends(oauth2.is_customer_admin),
+):
+    products = (
+        db.query(
+            models.Product.product_id,
+            models.Product.name.label("product_name"),
+            models.Product.description,
+            models.Product.quantity,
+            models.Product.price,
+            models.Category.name.label("category_name"),
+            models.Category.category_id,
+            models.Product.created_at,
+        )
+        .join(
+            models.productCategory,
+            models.Product.product_id == models.productCategory.product_id,
+            isouter=True,
+        )
+        .join(
+            models.Category,
+            models.Category.category_id == models.productCategory.category_id,
+            isouter=True,
+        )
+        .filter(models.Product.customer_id == customer_id)
+        .all()
+    )
+    return products
+
+
 @router.get("", response_model=List[schemas.CustomerOut])
 def get_all_customers(
     db: Session = Depends(database.get_db),

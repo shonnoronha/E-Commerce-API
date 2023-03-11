@@ -3,6 +3,7 @@ from typing import List
 from fastapi import APIRouter
 from fastapi import Depends
 from fastapi import HTTPException
+from fastapi import Query
 from fastapi import Response
 from fastapi import status
 from sqlalchemy.orm import Session
@@ -14,19 +15,20 @@ from app import schemas
 
 router = APIRouter(tags=["Orders"], prefix="/orders")
 
-# FIXME: ASAP
-
 
 @router.get("/my", response_model=List[schemas.OrderOut])
 def get_all_orders(
+    completed: bool = Query(default=None),
     db: Session = Depends(database.get_db),
     customer: schemas.CustomerOut = Depends(oauth2.get_current_customer),
 ):
-    orders = (
-        db.query(models.Orders)
-        .filter(models.Orders.customer_id == customer.customer_id)
-        .all()
+    orders_query = db.query(models.Orders).filter(
+        models.Orders.customer_id == customer.customer_id,
     )
+    if completed is not None:
+        orders = orders_query.filter(models.Orders.is_completed == completed).all()
+    else:
+        orders = orders_query.all()
     return orders
 
 
@@ -36,30 +38,75 @@ def show_order_details(
     db: Session = Depends(database.get_db),
     customer: schemas.CustomerOut = Depends(oauth2.get_current_customer),
 ):
-    # TODO: join with products to show product information
     order = db.query(models.Orders).filter(models.Orders.order_id == order_id).first()
     if not order:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail=f"order {order_id} not found!"
         )
+
     if order.customer_id != customer.customer_id:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail=f"customer {customer.customer_id} not authorized!",
         )
+
     order_items = (
-        db.query(models.OrderItems).filter(models.OrderItems.order_id == order_id).all()
+        db.query(
+            models.OrderItems.order_id,
+            models.Product.product_id,
+            models.Product.name.label("product_name"),
+            models.OrderItems.quantity,
+            models.OrderItems.order_item_id,
+            models.Product.price,
+            models.Product.description,
+            models.Category.category_id,
+            models.Category.name.label("category_name"),
+        )
+        .join(
+            models.Product,
+            models.Product.product_id == models.OrderItems.product_id,
+            isouter=True,
+        )
+        .join(
+            models.productCategory,
+            models.productCategory.product_id == models.Product.product_id,
+            isouter=True,
+        )
+        .join(
+            models.Category,
+            models.Category.category_id == models.productCategory.category_id,
+            isouter=True,
+        )
+        .filter(models.OrderItems.order_id == order_id)
+        .all()
     )
+
     return order_items
 
 
 @router.post("/items/add/{product_id}", response_model=schemas.OrderItemOut)
 def add_items_to_order(
     product_id: int,
+    quantity: int = Query(default=1),
     customer: schemas.CustomerOut = Depends(oauth2.get_current_customer),
     db: Session = Depends(database.get_db),
 ):
-    # TODO: customers cannot buy their own products, add schema for response
+    product_query = (
+        db.query(models.Product).filter(models.Product.product_id == product_id).first()
+    )
+
+    if not product_query:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"product {product_id} not found",
+        )
+
+    if product_query.customer_id == customer.customer_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=f"customer {customer.customer_id} cannot buy their own product",
+        )
+
     customer_order = (
         db.query(models.Orders)
         .filter(
@@ -75,16 +122,15 @@ def add_items_to_order(
         db.refresh(new_order)
         customer_order = new_order
 
-    product_query = (
-        db.query(models.Product).filter(models.Product.product_id == product_id).first()
-    )
-    if not product_query:
+    if product_query.quantity - quantity < 0:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"product {product_id} not found",
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=f"product {product_id} has only {product_query.quantity} unit(s) left!",
         )
+    else:
+        product_query.quantity -= quantity
 
-    customer_order.total_cost += int(product_query.price)
+    customer_order.total_cost += int(product_query.price * quantity)
 
     if product_id in [
         order_item.product_id for order_item in db.query(models.OrderItems).all()
@@ -94,15 +140,15 @@ def add_items_to_order(
             .filter(models.OrderItems.product_id == product_id)
             .first()
         )
-        order_item.quantity += 1
+        order_item.quantity += quantity
     else:
         order_item = models.OrderItems(
-            order_id=customer_order.order_id, product_id=product_id
+            order_id=customer_order.order_id, product_id=product_id, quantity=quantity
         )
         db.add(order_item)
 
     db.commit()
-    db.refresh(order_item)
+
     return order_item
 
 

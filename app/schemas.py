@@ -87,9 +87,9 @@ class OrderOut(BaseModel):
 
 class OrderItemOut(BaseModel):
     order_item_id: int
-    quantity: int
-    product_id: int
     order_id: int
+    product_id: int
+    quantity: int
 
     class Config:
         orm_mode = True
