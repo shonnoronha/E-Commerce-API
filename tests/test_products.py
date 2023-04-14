@@ -27,8 +27,8 @@ def test_single_product_authorized_customer(
 ):
     product = create_test_products[0]
     res = authorized_client.get(f"/products/{product.product_id}")
-    res_product = res.json().get("Product")
+    res_product = res.json()
     assert res_product.get("product_id") == product.product_id
-    assert res_product.get("name") == product.name
+    assert res_product.get("product_name") == product.name
     assert res_product.get("description") == product.description
     assert res.status_code == 200
