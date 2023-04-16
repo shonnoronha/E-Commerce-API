@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     database_username: str
     secret_key: str
     algorithm: str
-    access_token_expire_minutes: str
+    access_token_expire_minutes: str = "60"
     admin_email: str
 
     class Config:
